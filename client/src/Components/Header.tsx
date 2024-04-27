@@ -28,7 +28,8 @@ export default function Header() {
     <Container>
       <Title>Joseph</Title>
       <LinkItem href="/">Home</LinkItem>
-      <LinkItem href="/upload">upload</LinkItem>
+      <LinkItem href="/upload">Upload</LinkItem>
+      <LinkItem href="/scan">Scan</LinkItem>
     </Container>
   );
 }

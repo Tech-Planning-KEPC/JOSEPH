@@ -26,11 +26,19 @@ export default function Upload() {
   const handleUpload = () => {
     if (file) {
       const reader = new FileReader();
-      reader.onload = () => {
+      reader.onload = async () => {
         const csvData = reader.result as string;
         const rows = csvData.split("\n");
+        const formData = new FormData();
+        formData.append("file", csvData);
 
         console.log(rows);
+        const res = await fetch("http://127.0.0.1:8000/api/upload/", {
+          method: "POST",
+          body: formData,
+        });
+        const data = await res.json();
+        console.log(res.status, data);
       };
       reader.readAsText(file);
     }
