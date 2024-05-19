@@ -4,6 +4,7 @@ import Home from "./Routes/Home";
 import Upload from "./Routes/Upload";
 import Scan from "./Routes/Scan";
 import View from "./Routes/View";
+import ConfirmItem from "./Routes/ConfirmItem";
 
 const router = createBrowserRouter([
   {
@@ -13,7 +14,8 @@ const router = createBrowserRouter([
       { path: "", element: <Home /> },
       { path: "/upload", element: <Upload /> },
       { path: "/scan", element: <Scan /> },
-      { path: "/view", element: <View /> }
+      { path: "/view", element: <View /> },
+      { path: "/upload/:id", element: <ConfirmItem /> },
     ],
   },
 ]);

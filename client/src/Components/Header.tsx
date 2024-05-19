@@ -29,7 +29,6 @@ export default function Header() {
       <Title>Joseph</Title>
       <LinkItem href="/">Home</LinkItem>
       <LinkItem href="/upload">Upload</LinkItem>
-      <LinkItem href="/scan">Scan</LinkItem>
       <LinkItem href="/view">View</LinkItem>
     </Container>
   );
