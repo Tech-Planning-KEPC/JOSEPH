@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import { styled } from "styled-components";
 
 const Container = styled.div`
@@ -10,9 +10,10 @@ const Container = styled.div`
 
 const Table = styled.table`
   border-collapse: collapse;
-  width: 100%;
+  width: 100vw;
   padding: 50px;
   max-width: 100%;
+  font-size: 10px;
 `;
 
 const Td = styled.td`
@@ -35,6 +36,7 @@ interface Item {
   id: number;
   item_type: string;
   tag_id: string;
+  manager: string;
   name: string;
   brand: string;
   model: string;
@@ -59,60 +61,48 @@ export default function View() {
 
   const fetchItems = async () => {
     try {
-      const response = await fetch('http://127.0.0.1:8000/api/items/');
+      const response = await fetch("http://127.0.0.1:8000/api/items/");
       const data = await response.json();
       setItems(data);
     } catch (error) {
-      console.error('Error fetching:', error);
+      console.error("Error fetching:", error);
     }
   };
 
   return (
     <Container>
-    <Table>
-    <thead>
-  <tr>
-    <Th>ID</Th>
-    <Th>Type</Th>
-    <Th>Tag ID</Th>
-    <Th>Name</Th>
-    <Th>Brand</Th>
-    <Th>Model</Th>
-    <Th>Quantity</Th>
-    <Th>Serial</Th>
-    <Th>Price</Th>
-    <Th>Tax</Th>
-    <Th>Bought At</Th>
-    <Th>Status</Th>
-    <Th>Created At</Th>
-    <Th>Updated At</Th>
-    <Th>Category</Th>
-    <Th>Department</Th>
-  </tr>
-</thead>
-<tbody>
-  {items.map((item) => (
-    <tr key={item.id}>
-      <Td>{item.id}</Td>
-      <Td>{item.item_type}</Td>
-      <Td>{item.tag_id}</Td>
-      <Td>{item.name}</Td>
-      <Td>{item.brand}</Td>
-      <Td>{item.model}</Td>
-      <Td>{item.quantity}</Td>
-      <Td>{item.serial}</Td>
-      <Td>{item.price}</Td>
-      <Td>{item.tax}</Td>
-      <Td>{item.bought_at}</Td>
-      <Td>{item.status}</Td>
-      <Td>{item.created_at}</Td>
-      <Td>{item.updated_at}</Td>
-      <Td>{item.category}</Td>
-      <Td>{item.department}</Td>
-    </tr>
-  ))}
-</tbody>
-    </Table>
+      <Table>
+        <thead>
+          <tr>
+            <Th>태그 ID</Th>
+            <Th>부서</Th>
+            <Th>담당자</Th>
+            <Th>이름</Th>
+            <Th>카테고리</Th>
+            <Th>브랜드</Th>
+            <Th>모델</Th>
+            <Th>단가</Th>
+            <Th>구매일</Th>
+            <Th>상태</Th>
+          </tr>
+        </thead>
+        <tbody>
+          {items.map((item) => (
+            <tr key={item.id}>
+              <Td>{item.tag_id}</Td>
+              <Td>{item.department}</Td>
+              <Td>{item.manager}</Td>
+              <Td>{item.name}</Td>
+              <Td>{item.category}</Td>
+              <Td>{item.brand}</Td>
+              <Td>{item.model}</Td>
+              <Td>${item.price}</Td>
+              <Td>{item.bought_at}</Td>
+              <Td>{item.status}</Td>
+            </tr>
+          ))}
+        </tbody>
+      </Table>
     </Container>
   );
-};
+}
