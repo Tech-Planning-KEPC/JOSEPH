@@ -41,8 +41,8 @@ class User(AbstractBaseUser):
     phone = PhoneNumberField()
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateField(auto_now_add=True)
+    updated_at = models.DateField(auto_now=True)
     objects = UserManager()
 
     USERNAME_FIELD = 'email'
@@ -52,7 +52,7 @@ class User(AbstractBaseUser):
 class Item(models.Model):
     id = models.AutoField(primary_key=True)
     # unique should be True
-    tag_id = models.CharField(max_length=20, unique=False, null=False)
+    tag_id = models.CharField(max_length=20, unique=True, null=False)
     department = models.CharField(max_length=20, null=False)
     committee = models.CharField(max_length=20, null=False, blank=True)
     manager = models.CharField(max_length=20, null=False)
@@ -69,5 +69,5 @@ class Item(models.Model):
         decimal_places=2, max_digits=10, null=True, default=0)
     bought_at = models.DateField(null=True)
     note = models.CharField(max_length=50, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True, null=True)
-    updated_at = models.DateTimeField(auto_now=True, null=True)
+    created_at = models.DateField(auto_now_add=True, null=True)
+    updated_at = models.DateField(auto_now=True, null=True)
