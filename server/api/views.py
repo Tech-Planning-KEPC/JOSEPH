@@ -9,9 +9,11 @@ from rest_framework import status
 import pandas as pd
 
 
-class ItemListAPIView(generics.ListAPIView):
-    queryset = Item.objects.all()
-    serializer_class = ItemSerializer
+class ItemListAPIView(APIView):
+    def get(self, request):
+        queryset = Item.objects.all()
+        serializer = ItemSerializer(queryset, many=True)
+        return Response(serializer.data)
 
 
 class UploadAPIView(APIView):
