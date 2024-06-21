@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { styled } from "styled-components";
 import * as XLSX from 'xlsx';
-import { google } from 'googleapis';
 
 const Container = styled.div`
   display: flex;
@@ -85,37 +84,17 @@ export default function View() {
     XLSX.writeFile(workbook, 'items.xlsx');
   };
 
-  const openGoogleSheet = async () => {
+  const exportToGoogleSheet = async () => {
     try {
-      const auth = new google.auth.GoogleAuth({
-        credentials: {
-          client_email: 'kepc-22@sodium-task-412102.iam.gserviceaccount.com',
-          private_key: '-----BEGIN PRIVATE KEY-----MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCsqQkbg/9G+DYD\nEf1jUU7DJ362s8b2zNgf7xWzvPV0a3l2Yh2sX4PHtUeiWflKLVm8falfj0o4uFhO\n9hVTah8FenvUf71PMdeLIkNN/06ZwU5j4TzURoUOicUwRtY0arz967a1yLjT8w7j\nhBPs7VWs7hLcyv24lOa8oA/BBw1+rBgzd0yikVQ7eL2Bu2llztP96vrFuSa5rCux\nu/258bowit73dcwbkElE03WPbB7qhuHIOujt47l4V4EsOey4MyjpR2r7HuTcTCb3\ncuqWMTuSRGwRswYVIzt/7/b3mNGE67McjAlwsREJGJtJOSx+X9At3/a0xkHGkmli\nXrwa91eTAgMBAAECggEABF46ZsHOIYOCCk3YNT0HWxSSthiSPggsp5Iq4GM1an6V\nkhMlYQkBknnZmBfioKfJD2W2dT5wyEKRqV28aGHU6xSQMW4R4gEGzPRO85gz6tvj\nGc/G9C/cieOeY3xHSwgwQ9REyRCM7H/HrqXWwzW15ywWuhNAm/zYYYlDHMUK6Ftz\nkoSgknkVbnuxNKVt4rRto0QZYYSZGaH7NTFdB6pKKUm8Dwzwhoq8840i8MwYnd20\niDwaCq9WfMDz4yv5xnLmX5XMlSluVrJdBYqLFFV4ZjB/4q8Bx6sqCbkw4femsfs4\n9GmRXI7QSZ2h2Vz6I5dBX21eGoflAridXVNN+0wLgQKBgQDdLCFRcS0HDn/MKPa0\nmfmIYc/daV7oQFAfkAKLzZFg9ntjHTG6ei1kOSPGkbn4ul6oQmdJNooPV9Nc5ZrQ\nODkcAlMWYg+Cu5m+Se5YbFrEDVOnOupQhgKRYBJLFavSUmuGakE1a+HssKoJsrYg\nu1lG0jvAR6NX7UjICaQoBDsPcwKBgQDH2UsBMv0s0WR0iXYv/TGTTMiQS64kzrtW\nrnOe2aTuIuqHKD1XMRg97+FTSTF3t/ti6XkZ4cCf7BsMeoWkniKvkWN5gZa3pa8O\nNmLQty+ZO05TUxhPPXUDioXggmwfXqwwdWB6wSdUc+2SDUZJvnypD0CKb+p5CiME\nLHddpWZPYQKBgGUbr3+TxYncTv/+Ggol+bUnQeduLDzwabCEHSXcLAGvrGh7CCi/\ngdC3bmtwYxwZ1vwEn0MQ87xf4fgt3sAhc7oiNemdmomhSX98PMGfhz7o+L0Sadu1\n56adzL8WgR39H7qrCHRrhTS27oTQdgIwo3eE1FvqY/nmN8d64NiKVpWRAoGAf8RZ\nIoQhvoSET8kOSXH7PuwJEc+An0GYHbvcaYNF4YVrIUvFo7fcgsSY7vFNcfeq/Tq8\n1KIyz0tYo6q1RGBhVpOB4E3MOM7xUwnMNRnYkYOL+NOYKBjndYMbQkS/sXKKbVSt\ngO16IpEXIpfgBweElWUN4zPX2Nh1OJbhHXrAJSECgYA46RykPdqvJBSVDXOYGE5e\nqho95S/TSuLjrnJnh6Q2ZOFLWZIZPBSLJc3SwIR6OLmvrE+mJ0C48ostSlX9yOnA\nO5OfTVJoB/6ubhAKnK48TKPDeNg3lvthueFf7v1ytclWcGikG7TasFosvaZ3ZAvN\ndXhh+JobJsCfDL5jKyrvWQ==\n-----END PRIVATE KEY-----',
-        },
-        scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-      });
-
-      const sheets = google.sheets({ version: 'v4', auth });
-
-      const spreadsheetId = '1Mo7ngf5JdB4T8FdU1CJX';
-      const range = 'Sheet1!A1:Z';
-
-      const request = {
-        spreadsheetId,
-        range,
-        valueInputOption: 'USER_ENTERED',
-        resource: {
-          values: items.map((item) => Object.values(item)),
-        },
-      };
-
-      const response = await sheets.spreadsheets.values.update(request);
-
-      window.open(`https://docs.google.com/spreadsheets/d/${spreadsheetId}/edit#gid=0`);
+      const response = await fetch('http://127.0.0.1:8000/api/export/');
+      console.log(response);
     } catch (error) {
-      console.error('Error opening Google Sheet:', error);
+      console.error('Error fetching:', error);
     }
-  };
+
+    const googleSheetsUrl = 'https://docs.google.com/spreadsheets/d/1o9OqsjPJZz4UI9z77e9bd6W-03cLiyN_pUVxyogZZFo/edit?gid=0#gid=0';
+    window.open(googleSheetsUrl, '_blank');
+  }
 
   return (
     <Container>
@@ -164,7 +143,7 @@ export default function View() {
         </tbody>
       </Table>
       <Button onClick={exportToExcel}>Export to Excel</Button>
-      <Button onClick={openGoogleSheet}>Open Google Sheet</Button>
+      <Button onClick={exportToGoogleSheet}>Export to Google Sheet</Button>
     </Container>
   );
 };
