@@ -1,7 +1,7 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { styled } from "styled-components";
 import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { SERVER_URL } from "../api";
 
 const Container = styled.div`
@@ -46,6 +46,15 @@ const PageContainer = styled.div`
   justify-content: space-between;
   align-items: center;
 `;
+
+const excelSerialDateToJSDate = (serial) => {
+  const utc_days = Math.floor(serial - 25569);
+  const date_info = new Date(utc_days * 86400 * 1000);
+  const year = date_info.getFullYear();
+  const month = String(date_info.getMonth() + 1).padStart(2, "0");
+  const day = String(date_info.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+};
 
 export default function ConfirmItem() {
   const navigate = useNavigate();
@@ -106,25 +115,9 @@ export default function ConfirmItem() {
     const data = await res.json();
 
     console.log(data, res.status);
-    navigate("/view");
   };
 
-  function excelDateToJSDate(excelDate) {
-    const unixEpochOffset = 25569;
-    const unixTimestamp = (excelDate - unixEpochOffset) * 24 * 60 * 60 * 1000;
-    return new Date(unixTimestamp).toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    });
-  }
-
-  useEffect(() => {
-    if (!modifiedData) {
-      navigate("/upload");
-    }
-  }, []);
-
+  console.log(modifiedData[page - 1]);
   return (
     <Container>
       <h2>
@@ -231,7 +224,7 @@ export default function ConfirmItem() {
           <Label>구매일자</Label>
           <Input
             key={`purchaseDate-${page}`}
-            value={excelDateToJSDate(modifiedData[page - 1].purchaseDate)}
+            defaultValue={modifiedData[page - 1].purchaseDate}
             {...register("purchaseDate")}
           />
         </InputContainer>
@@ -239,7 +232,8 @@ export default function ConfirmItem() {
           <Label>검수일자</Label>
           <Input
             key={`inspectionDate-${page}`}
-            value={new Date().toLocaleDateString("en-US")}
+            type="date"
+            defaultValue={new Date().toLocaleDateString("en-US")}
             {...register("inspectionDate")}
           />
         </InputContainer>
