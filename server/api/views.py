@@ -1,4 +1,6 @@
 from datetime import datetime
+import json
+import os
 from time import strptime
 from rest_framework import generics
 from .models import Item
@@ -26,10 +28,8 @@ class UploadAPIView(APIView):
             tag_id = row.get('tagId')
             try:
                 item = Item.objects.get(tag_id=tag_id)
-                print(item)
             except Item.DoesNotExist:
                 if tag_id is not None and tag_id != '':
-                    print(row)
                     item = Item.objects.create(
                         tag_id=row.get('tagId'),
                         department=row.get('department', ''),
@@ -65,7 +65,7 @@ class ScanAPIView(APIView):
 class ExportGsAPIView(APIView):
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets']
     SPREADSHEET_ID = '1o9OqsjPJZz4UI9z77e9bd6W-03cLiyN_pUVxyogZZFo'
-    TOKEN_PATH = r'C:\Users\jaesu\Documents\KEPC_Tech\JOSEPH\server\api\google-sheet-api-token.json'
+    TOKEN_PATH = os.path.join(os.getcwd(), 'api/google-sheet-api-token.json')
 
     def export_data_to_sheets(self):
 
@@ -82,7 +82,7 @@ class ExportGsAPIView(APIView):
         items = Item.objects.all()
         values_list = [
             fields] + [[str(value) for value in item.values()] for item in items.values()]
-        print(values_list)
+
         sheet.sheet1.clear()
         sheet.sheet1.update(values_list)
 
@@ -93,8 +93,23 @@ class ExportGsAPIView(APIView):
 
 class ScanAPIView(APIView):
     def post(self, request):
-        scan_data = request.data
-        for row in scan_data:
-            print(row)
+        csv_tag_ids = [row[0] for row in request.data]
+        print(csv_tag_ids)
 
-        return Response({"message": "good"}, status=status.HTTP_200_OK)
+        if not csv_tag_ids:
+            return Response({"error": "No file uploaded"}, status=status.HTTP_400_BAD_REQUEST)
+
+        # for row in reader:
+        #     tag_id = row.get('tagId')
+        #     if tag_id:
+        #         csv_tag_ids.add(tag_id)
+
+        db_tag_ids = set(Item.objects.values_list('tag_id', flat=True))
+
+        missing_tag_ids = csv_tag_ids - db_tag_ids
+
+        response_data = {
+            "missing_tag_ids": list(missing_tag_ids),
+        }
+
+        return Response(response_data, status=status.HTTP_200_OK)
