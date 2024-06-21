@@ -1,6 +1,7 @@
 import styled, { css } from "styled-components";
 import { useDropzone } from "react-dropzone";
 import { useNavigate } from "react-router-dom";
+import { SERVER_URL } from "../api";
 
 const Container = styled.div`
   display: flex;
@@ -51,8 +52,17 @@ export default function Scan() {
 
     reader.onabort = () => console.log("File reading was aborted");
     reader.onerror = () => console.log("File reading failed");
-    reader.onload = () => {
-      console.log(reader.result);
+    reader.onload = async () => {
+      const data = reader.result.split("\n").slice(6);
+      const res = await fetch(`${SERVER_URL}/api/scan/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      const res_data = await res.json();
+      console.log(res_data);
     };
 
     if (acceptedFiles.length > 0) {
@@ -63,12 +73,13 @@ export default function Scan() {
 
   return (
     <Container>
-      {/* <DropZoneContainer {...getRootProps()} $isDragActive={isDragActive}>
+      <div>재고 확인</div>
+      <DropZoneContainer {...getRootProps()} $isDragActive={isDragActive}>
         <input {...getInputProps()} />
         <DropZoneText>
-          엑셀 파일을 드래그 앤 드롭하거나 클릭하여 업로드하세요.
+          csv 파일을 드래그 앤 드롭하거나 클릭하여 업로드하세요.
         </DropZoneText>
-      </DropZoneContainer> */}
+      </DropZoneContainer>
     </Container>
   );
 }

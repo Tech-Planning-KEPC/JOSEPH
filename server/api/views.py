@@ -49,3 +49,12 @@ class UploadAPIView(APIView):
                     response_data.append(ItemSerializer(item).data)
 
         return Response({"saved data": response_data}, status=status.HTTP_200_OK)
+
+
+class ScanAPIView(APIView):
+    def post(self, request):
+        scan_data = request.data
+        for row in scan_data:
+            print(row)
+
+        return Response({"message": "good"}, status=status.HTTP_200_OK)
