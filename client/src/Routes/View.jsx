@@ -32,28 +32,8 @@ const Th = styled.th`
   color: white;
 `;
 
-interface Item {
-  id: number;
-  item_type: string;
-  tag_id: string;
-  manager: string;
-  name: string;
-  brand: string;
-  model: string;
-  quantity: number;
-  serial: string;
-  price: string;
-  tax: string;
-  bought_at: string;
-  status: string;
-  created_at: string;
-  updated_at: string;
-  category: number;
-  department: number;
-}
-
 export default function View() {
-  const [items, setItems] = useState<Item[]>([]);
+  const [items, setItems] = useState([]);
 
   useEffect(() => {
     fetchItems();

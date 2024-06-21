@@ -7,7 +7,7 @@ import router from "./Router";
 import Header from "./Components/Header";
 
 const queryClient = new QueryClient();
-const root = createRoot(document.getElementById("root")!);
+const root = createRoot(document.getElementById("root"));
 
 root.render(
   <RecoilRoot>
