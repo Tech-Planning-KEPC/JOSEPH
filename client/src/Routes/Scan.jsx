@@ -2,6 +2,7 @@ import styled, { css } from "styled-components";
 import { useDropzone } from "react-dropzone";
 import { useNavigate } from "react-router-dom";
 import { SERVER_URL } from "../api";
+import React, { useState } from "react";
 
 const Container = styled.div`
   display: flex;
@@ -46,6 +47,7 @@ const DropZoneText = styled.p`
 
 export default function Scan() {
   const navigate = useNavigate();
+  const [missingTagIds, setMissingTagIds] = useState(null);
 
   const onDrop = (acceptedFiles) => {
     const reader = new FileReader();
@@ -62,6 +64,14 @@ export default function Scan() {
         body: JSON.stringify(data),
       });
       const res_data = await res.json();
+      let tagIds = [];
+      if (Array.isArray(res_data)) {
+        tagIds = res_data;
+      } else if (typeof res_data === "object" && res_data !== null) {
+        tagIds = res_data.missing_tag_ids || Object.values(res_data)[0] || [];
+      }
+
+      setMissingTagIds(tagIds);
       console.log(res_data);
     };
 
@@ -80,6 +90,17 @@ export default function Scan() {
           csv 파일을 드래그 앤 드롭하거나 클릭하여 업로드하세요.
         </DropZoneText>
       </DropZoneContainer>
+
+      {missingTagIds && (
+        <div style={{ marginTop: "20px" }}>
+          <h3>스캔되지 않은 ID들:</h3>
+          <ul>
+            {missingTagIds.map((tagId, index) => (
+              <li key={index}>{tagId}</li>
+            ))}
+          </ul>
+        </div>
+      )}
     </Container>
   );
 }
