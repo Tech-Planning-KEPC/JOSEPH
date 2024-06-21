@@ -89,3 +89,12 @@ class ExportGsAPIView(APIView):
     def get(self, request):
         self.export_data_to_sheets()
         return Response({"message": "Data exported successfully."})
+
+
+class ScanAPIView(APIView):
+    def post(self, request):
+        scan_data = request.data
+        for row in scan_data:
+            print(row)
+
+        return Response({"message": "good"}, status=status.HTTP_200_OK)
