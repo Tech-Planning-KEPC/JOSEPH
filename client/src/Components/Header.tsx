@@ -16,7 +16,7 @@ const Title = styled.div`
 `;
 
 const LinkItem = styled.a`
-  margin-left: 10px;
+  margin-right: 50px;
   color: white;
   &:hover {
     color: #d8d8d8;
@@ -27,9 +27,9 @@ export default function Header() {
   return (
     <Container>
       <Title>Joseph</Title>
-      <LinkItem href="/">Home</LinkItem>
-      <LinkItem href="/upload">Upload</LinkItem>
-      <LinkItem href="/view">View</LinkItem>
+      <LinkItem href="/upload">등록</LinkItem>
+      <LinkItem href="/scan">스캔</LinkItem>
+      <LinkItem href="/view">재고</LinkItem>
     </Container>
   );
 }

@@ -41,27 +41,5 @@ export default function Scan() {
     console.log(res.status, data);
   };
 
-  return (
-    <Container>
-      <ScanBox>
-        <h1>값 입력</h1>
-        <form onSubmit={handleSubmit}>
-          <input
-            type="text"
-            value={inputValue}
-            onChange={handleInputChange}
-            placeholder="값을 입력하세요"
-          />
-          <button type="submit">제출</button>
-        </form>
-        <h2>입력된 값들:</h2>
-        <ul>
-          {values.map((value, index) => (
-            <li key={index}>{value}</li>
-          ))}
-        </ul>
-        <button onClick={handleUpload}>서버로 보내기</button>
-      </ScanBox>
-    </Container>
-  );
+  return <Container></Container>;
 }
