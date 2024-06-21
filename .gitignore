@@ -5,6 +5,7 @@
 __pycache__
 db.sqlite3
 media
+/server/api/google-sheet-api-token.json
 
 # Backup files # 
 *.bak 
