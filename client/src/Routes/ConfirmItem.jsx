@@ -1,7 +1,7 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { styled } from "styled-components";
 import { useForm } from "react-hook-form";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SERVER_URL } from "../api";
 
 const Container = styled.div`
@@ -106,9 +106,25 @@ export default function ConfirmItem() {
     const data = await res.json();
 
     console.log(data, res.status);
+    navigate("/view");
   };
 
-  console.log(modifiedData[page - 1]);
+  function excelDateToJSDate(excelDate) {
+    const unixEpochOffset = 25569;
+    const unixTimestamp = (excelDate - unixEpochOffset) * 24 * 60 * 60 * 1000;
+    return new Date(unixTimestamp).toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    });
+  }
+
+  useEffect(() => {
+    if (!modifiedData) {
+      navigate("/upload");
+    }
+  }, []);
+
   return (
     <Container>
       <h2>
@@ -215,7 +231,7 @@ export default function ConfirmItem() {
           <Label>구매일자</Label>
           <Input
             key={`purchaseDate-${page}`}
-            value={new Date().toLocaleDateString("en-US")}
+            value={excelDateToJSDate(modifiedData[page - 1].purchaseDate)}
             {...register("purchaseDate")}
           />
         </InputContainer>
