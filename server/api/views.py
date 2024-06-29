@@ -89,11 +89,10 @@ class ScanAPIView(APIView):
         if not csv_tag_ids:
             return Response({"error": "No file uploaded"}, status=status.HTTP_400_BAD_REQUEST)
 
-        db_tag_ids = set(Item.objects.values_list('tag_id', flat=True))
-        missing_tag_ids = db_tag_ids - csv_tag_ids
+        missing_items = Item.objects.exclude(tag_id__in=csv_tag_ids).values('tag_id', 'name')
 
         response_data = {
-            "missing_tag_ids": list(missing_tag_ids),
+            "missing_items": list(missing_items)
         }
 
         return Response(response_data, status=status.HTTP_200_OK)

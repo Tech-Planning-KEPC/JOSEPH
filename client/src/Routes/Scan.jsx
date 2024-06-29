@@ -1,6 +1,5 @@
 import styled, { css } from "styled-components";
 import { useDropzone } from "react-dropzone";
-import { useNavigate } from "react-router-dom";
 import { SERVER_URL } from "../api";
 import React, { useState } from "react";
 
@@ -46,8 +45,7 @@ const DropZoneText = styled.p`
 `;
 
 export default function Scan() {
-  const navigate = useNavigate();
-  const [missingTagIds, setMissingTagIds] = useState(null);
+  const [missingItems, setMissingItems] = useState(null);
 
   const onDrop = (acceptedFiles) => {
     const reader = new FileReader();
@@ -55,7 +53,7 @@ export default function Scan() {
     reader.onabort = () => console.log("File reading was aborted");
     reader.onerror = () => console.log("File reading failed");
     reader.onload = async () => {
-      const data = reader.result.split("\n").slice(6);
+      const data = reader.result.split("\n");
       const res = await fetch(`${SERVER_URL}/api/scan/`, {
         method: "POST",
         headers: {
@@ -64,15 +62,9 @@ export default function Scan() {
         body: JSON.stringify(data),
       });
       const res_data = await res.json();
-      let tagIds = [];
-      if (Array.isArray(res_data)) {
-        tagIds = res_data;
-      } else if (typeof res_data === "object" && res_data !== null) {
-        tagIds = res_data.missing_tag_ids || Object.values(res_data)[0] || [];
-      }
 
-      setMissingTagIds(tagIds);
-      console.log(res_data);
+      setMissingItems(res_data.missing_items);
+      console.log(res_data.missing_items);
     };
 
     if (acceptedFiles.length > 0) {
@@ -91,16 +83,21 @@ export default function Scan() {
         </DropZoneText>
       </DropZoneContainer>
 
-      {missingTagIds && (
-        <div style={{ marginTop: "20px" }}>
-          <h3>스캔되지 않은 ID들:</h3>
-          <ul>
-            {missingTagIds.map((tagId, index) => (
-              <li key={index}>{tagId}</li>
-            ))}
-          </ul>
-        </div>
-      )}
+      {missingItems &&
+        (missingItems.length > 0 ? (
+          <div>
+            <p>스캔되지 않은 물품들:</p>
+            <ul>
+              {missingItems.map((item, index) => (
+                <li key={index}>
+                  Tag ID: {item.tag_id}, Item Name: {item.name}
+                </li>
+              ))}
+            </ul>
+          </div>
+        ) : (
+          <p>모두 스캔 성공!</p>
+        ))}
     </Container>
   );
 }
