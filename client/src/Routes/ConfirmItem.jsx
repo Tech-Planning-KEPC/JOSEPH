@@ -60,9 +60,10 @@ const StyledList = styled.ul`
     border-radius: 3px;
     font: inherit;
     font-size: 14px;
+    z-index: 1000;
     
     .list-item {
-      margin: 0px 0;
+      padding-left: 10px;
       height: 27px;
       display: flex; /* 항목을 flex로 설정하여 */
       align-items: center; /* 수직 가운데 정렬을 적용합니다 */
@@ -100,19 +101,43 @@ export default function ConfirmItem() {
       newData[page - 1].committee = value;
       return newData;
     });
-    setIsOpen(false);
+    setCommitteeIsOpen(false);
+  };
+
+  const handleDepartmentSelect = (value) => {
+    setDepartmentIdentify(value);
+    setModifiedData((prevData) => {
+      const newData = [...prevData];
+      newData[page - 1].department = value;
+      return newData;
+    });
+    setDepartmentIsOpen(false);
+  };
+
+  const handleLocationSelect = (value) => {
+    setLocationIdentify(value);
+    setModifiedData((prevData) => {
+      const newData = [...prevData];
+      newData[page - 1].location = value;
+      return newData;
+    });
+    setLocationIsOpen(false);
   };
 
   const handlePrevPage = () => {
-    setCommitteeIdentify(modifiedData[page-2].committee);
     resetFields();
     navigate(`/upload/${page - 1}`, { state: { modifiedData, totalPage } });
+    setCommitteeIdentify(modifiedData[page-2].committee);
+    setDepartmentIdentify(modifiedData[page-2].department);
+    setLocationIdentify(modifiedData[page-2].location);
   };
 
   const handleNextPage = () => {
     resetFields();
     navigate(`/upload/${page + 1}`, { state: { modifiedData, totalPage } });
     setCommitteeIdentify(modifiedData[page].committee);
+    setDepartmentIdentify(modifiedData[page].department);
+    setLocationIdentify(modifiedData[page].location);
   };
 
   const onSubmit = (values) => {
@@ -157,7 +182,7 @@ export default function ConfirmItem() {
     console.log(data, res.status);
   };
   
-  const dropDownRef = useRef();
+  const CommitteeDropDownRef = useRef();
   const [CommitteeIdentify, setCommitteeIdentify] = useState(modifiedData[page - 1].committee);
   const CommitteeList = [
     '예배위원회',
@@ -176,8 +201,45 @@ export default function ConfirmItem() {
     '비전청년위원회',
     '재정위원회',
     '가정교회 사역원']
+  const [CommitteeIsOpen, setCommitteeIsOpen] = useDetectClose(CommitteeDropDownRef, false);
 
-  const [isOpen, setIsOpen] = useDetectClose(dropDownRef, false);
+  const DepartmentDropDownRef = useRef();
+  const [DepartmentIdentify, setDepartmentIdentify] = useState(modifiedData[page - 1].department);
+  const DepartmentList = [
+    '주일예배부',
+    '1부 시온찬양대',
+    '중보기도부',
+    '상담사역부',
+    '영유아부',
+    '중고등부',
+    '선교기획부',
+    '이웃사랑부',
+    '새생명전도부',
+    '새가족 1부',
+    '건물 관리부',
+    '친교부',
+    '에녹봉사부',
+    '청년섬김부',
+    '재정부',
+    '마태평원']
+  const [DepartmentIsOpen, setDepartmentIsOpen] = useDetectClose(DepartmentDropDownRef, false);
+
+  const LocationDropDownRef = useRef();
+  const [LocationIdentify, setLocationIdentify] = useState(modifiedData[page - 1].location);
+  const LocationList = [
+    '본당',
+    'EM 예배실',
+    '중고등부실',
+    '초등부실',
+    '유년부실',
+    '유치부실',
+    'AWANA실',
+    '친교실',
+    '소친교실',
+    '당회실',
+    '새가족실',
+    '찬양대실']
+  const [LocationIsOpen, setLocationIsOpen] = useDetectClose(LocationDropDownRef, false);
 
   console.log(modifiedData[page - 1]);
   return (
@@ -203,7 +265,7 @@ export default function ConfirmItem() {
           />
         </InputContainer>
         
-        <div ref={dropDownRef} style={{ position: 'relative'}}>
+        <div ref={CommitteeDropDownRef} style={{ position: 'relative'}}>
         <InputContainer>
         
           <Label>위원회</Label>
@@ -212,7 +274,7 @@ export default function ConfirmItem() {
             key={`committee-${page}`}
             value={CommitteeIdentify}
             {...register("committee")}
-            onClick={() => setIsOpen(!isOpen)}
+            onClick={() => setCommitteeIsOpen(!CommitteeIsOpen)}
             type='button'
             style={{ backgroundColor: 'white', textAlign: 'left' }}
           />
@@ -229,7 +291,7 @@ export default function ConfirmItem() {
           </span>
           </div> 
         </InputContainer>
-        {isOpen && 
+        {CommitteeIsOpen && 
           <StyledList>
           {CommitteeList.map((value, index) => (
             <li
@@ -237,7 +299,7 @@ export default function ConfirmItem() {
               className="list-item"
               onClick={() => {
                 setCommitteeIdentify(value);
-                setIsOpen(false);
+                setCommitteeIsOpen(false);
                 handleCommitteeSelect(value);
               }}
             >
@@ -248,22 +310,96 @@ export default function ConfirmItem() {
         }
         </div>
         
+        <div ref={DepartmentDropDownRef} style={{ position: 'relative'}}>
         <InputContainer>
+        
           <Label>부서</Label>
+          <div style={{  width: '101.18%' }}>
           <Input
-            key={`department-${page}`}
-            value={modifiedData[page - 1].department}
+            key={`departmnet-${page}`}
+            value={DepartmentIdentify}
             {...register("department")}
+            onClick={() => setDepartmentIsOpen(!DepartmentIsOpen)}
+            type='button'
+            style={{ backgroundColor: 'white', textAlign: 'left' }}
           />
+          <span
+            style={{
+            position: 'absolute',
+            right: '8px',
+            top: '5%',
+            transform: 'translateY(-0%)',
+            pointerEvents: 'none', // 텍스트에 대한 클릭 이벤트를 비활성화하여 입력 필드의 클릭 이벤트가 작동하도록 함
+            }}
+          >
+          ⌄
+          </span>
+          </div> 
         </InputContainer>
+        {DepartmentIsOpen && 
+          <StyledList>
+          {DepartmentList.map((value, index) => (
+            <li
+              key={index}
+              className="list-item"
+              onClick={() => {
+                setDepartmentIdentify(value);
+                setDepartmentIsOpen(false);
+                handleDepartmentSelect(value);
+              }}
+            >
+              {value}
+            </li>
+          ))}
+        </StyledList>
+        }
+        </div>
+
+        <div ref={LocationDropDownRef} style={{ position: 'relative'}}>
         <InputContainer>
+        
           <Label>장소</Label>
+          <div style={{  width: '101.18%' }}>
           <Input
             key={`location-${page}`}
-            value={modifiedData[page - 1].location}
+            value={LocationIdentify}
             {...register("location")}
+            onClick={() => setLocationIsOpen(!LocationIsOpen)}
+            type='button'
+            style={{ backgroundColor: 'white', textAlign: 'left' }}
           />
+          <span
+            style={{
+            position: 'absolute',
+            right: '8px',
+            top: '5%',
+            transform: 'translateY(-0%)',
+            pointerEvents: 'none', // 텍스트에 대한 클릭 이벤트를 비활성화하여 입력 필드의 클릭 이벤트가 작동하도록 함
+            }}
+          >
+          ⌄
+          </span>
+          </div> 
         </InputContainer>
+        {LocationIsOpen && 
+          <StyledList>
+          {LocationList.map((value, index) => (
+            <li
+              key={index}
+              className="list-item"
+              onClick={() => {
+                setLocationIdentify(value);
+                setLocationIsOpen(false);
+                handleLocationSelect(value);
+              }}
+            >
+              {value}
+            </li>
+          ))}
+        </StyledList>
+        }
+        </div>
+
         <InputContainer>
           <Label>담당자</Label>
           <Input
