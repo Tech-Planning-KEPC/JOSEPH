@@ -9,11 +9,21 @@ const Container = styled.div`
   padding: 50px;
 `;
 
-const ScanBox = styled.div`
+const LocationButtonContainer = styled.div`
   display: flex;
-  flex-direction: column;
-  width: 200px;
-  gap: 20px;
+  flex-direction: row;
+  overflow-x: auto;
+  padding: 5px 0;
+`;
+
+const LocationButton = styled.div`
+  display: flex;
+  margin-right: 5px;
+  width: fit-content;
+  padding: 5px;
+  overflow-x: auto;
+  border: 2px;
+  cursor: pointer;
 `;
 
 const DropZoneContainer = styled.div`
@@ -46,6 +56,26 @@ const DropZoneText = styled.p`
 
 export default function Scan() {
   const [missingItems, setMissingItems] = useState(null);
+  const [selectedLocation, setSelectedLocation] = useState("");
+
+  const locations = [
+    "본당",
+    "EM 예배실",
+    "중고등부실",
+    "초등부실",
+    "유년부실",
+    "유치부실",
+    "AWANA실",
+    "친교실",
+    "소친교실",
+    "당회실",
+    "새가족실",
+    "찬양대실",
+  ];
+
+  const handleLocationSelect = (location) => {
+    setSelectedLocation(location);
+  };
 
   const onDrop = (acceptedFiles) => {
     const reader = new FileReader();
@@ -53,13 +83,16 @@ export default function Scan() {
     reader.onabort = () => console.log("File reading was aborted");
     reader.onerror = () => console.log("File reading failed");
     reader.onload = async () => {
-      const data = reader.result.split("\n");
+      const data = reader.result.split("\n").slice(6);
       const res = await fetch(`${SERVER_URL}/api/scan/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(data),
+        body: JSON.stringify({
+          csvData: data,
+          location: selectedLocation,
+        }),
       });
       const res_data = await res.json();
 
@@ -76,12 +109,32 @@ export default function Scan() {
   return (
     <Container>
       <div>재고 확인</div>
-      <DropZoneContainer {...getRootProps()} $isDragActive={isDragActive}>
-        <input {...getInputProps()} />
-        <DropZoneText>
-          csv 파일을 드래그 앤 드롭하거나 클릭하여 업로드하세요.
-        </DropZoneText>
-      </DropZoneContainer>
+
+      <h2>스캔 장소 선택</h2>
+      <LocationButtonContainer>
+        {locations.map((location) => (
+          <LocationButton
+            key={location}
+            onClick={() => handleLocationSelect(location)}
+            style={{
+              backgroundColor: location === selectedLocation ? "gray" : "white",
+              color: location === selectedLocation ? "white" : "black",
+            }}
+          >
+            {location}
+          </LocationButton>
+        ))}
+      </LocationButtonContainer>
+      {selectedLocation && <p>현재 선택된 장소: {selectedLocation}</p>}
+
+      {selectedLocation && (
+        <DropZoneContainer {...getRootProps()} $isDragActive={isDragActive}>
+          <input {...getInputProps()} />
+          <DropZoneText>
+            csv 파일을 드래그 앤 드롭하거나 클릭하여 업로드하세요.
+          </DropZoneText>
+        </DropZoneContainer>
+      )}
 
       {missingItems &&
         (missingItems.length > 0 ? (

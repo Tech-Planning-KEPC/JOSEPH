@@ -99,6 +99,7 @@ export default function View() {
             <Th>Updated At</Th>
             <Th>Category</Th>
             <Th>Department</Th>
+            <Th>Location</Th>
           </tr>
         </thead>
         <tbody>
@@ -120,6 +121,7 @@ export default function View() {
               <Td>{item.updated_at}</Td>
               <Td>{item.category}</Td>
               <Td>{item.department}</Td>
+              <Td>{item.location}</Td>
             </tr>
           ))}
         </tbody>
