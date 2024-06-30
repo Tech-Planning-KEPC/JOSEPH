@@ -1,7 +1,7 @@
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { styled } from "styled-components";
 import { useForm } from "react-hook-form";
-import { useState, useRef} from "react";
+import { useState, useRef, useEffect} from "react";
 import { SERVER_URL } from "../api";
 import useDetectClose from "../Components/useDetectClose";
 
@@ -76,14 +76,19 @@ const StyledList = styled.ul`
     }
   `;
 
-const excelSerialDateToJSDate = (serial) => {
-  const utc_days = Math.floor(serial - 25569);
-  const date_info = new Date(utc_days * 86400 * 1000);
-  const year = date_info.getFullYear();
-  const month = String(date_info.getMonth() + 1).padStart(2, "0");
-  const day = String(date_info.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-};
+  function convertExcelDate(serial) {
+    const utc_days = Math.floor(serial - 25569);
+    const utc_value = utc_days * 86400;
+    const date_info = new Date(utc_value * 1000);
+    const fractional_day = serial - Math.floor(serial) + 0.0000001;
+    const total_seconds = Math.floor(86400 * fractional_day);
+    
+    const seconds = total_seconds % 60;
+    const hours = Math.floor(total_seconds / (60 * 60));
+    const minutes = Math.floor((total_seconds - (hours * 60 * 60)) / 60);
+    
+    return new Date(Date.UTC(date_info.getFullYear(), date_info.getMonth(), date_info.getDate()+2, hours, minutes, seconds));
+  }
 
 export default function ConfirmItem() {
   const navigate = useNavigate();
@@ -91,9 +96,9 @@ export default function ConfirmItem() {
   const { data, totalPage } = state;
   const { id } = useParams();
   const page = Number(id);
-  const { register, handleSubmit, resetField } = useForm();
+  const { register, handleSubmit, resetField, setValue } = useForm();
   const [modifiedData, setModifiedData] = useState(data);
-
+  
   const handleCommitteeSelect = (value) => {
     setCommitteeIdentify(value);
     setModifiedData((prevData) => {
@@ -155,7 +160,6 @@ export default function ConfirmItem() {
     resetField("committee");
     resetField("department");
     resetField("email");
-    resetField("inspectionDate");
     resetField("location");
     resetField("manager");
     resetField("model");
@@ -460,17 +464,8 @@ export default function ConfirmItem() {
           <Label>구매일자</Label>
           <Input
             key={`purchaseDate-${page}`}
-            defaultValue={modifiedData[page - 1].purchaseDate}
+            defaultValue={convertExcelDate(modifiedData[page - 1].purchaseDate).toLocaleDateString('en-US')}
             {...register("purchaseDate")}
-          />
-        </InputContainer>
-        <InputContainer>
-          <Label>검수일자</Label>
-          <Input
-            key={`inspectionDate-${page}`}
-            type="date"
-            defaultValue={new Date().toLocaleDateString("en-US")}
-            {...register("inspectionDate")}
           />
         </InputContainer>
         <InputContainer>
