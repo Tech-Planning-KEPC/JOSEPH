@@ -53,6 +53,7 @@ class Item(models.Model):
     id = models.AutoField(primary_key=True)
     # unique should be True
     tag_id = models.CharField(max_length=20, unique=True, null=False)
+    location = models.CharField(max_length=20, null=False, default="Unknown")
     department = models.CharField(max_length=20, null=False)
     committee = models.CharField(max_length=20, null=False, blank=True)
     manager = models.CharField(max_length=20, null=False)

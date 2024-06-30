@@ -34,6 +34,7 @@ class UploadAPIView(APIView):
                         tag_id=row.get('tagId'),
                         department=row.get('department', ''),
                         committee=row.get('committee', ''),
+                        location=row.get('location'),
                         manager=row.get('manager', ''),
                         email=row.get('email', ''),
                         phone=row.get('phone', ''),
@@ -44,8 +45,9 @@ class UploadAPIView(APIView):
                         serial='',
                         price=row.get('unitPrice', ''),
                         tax=0.0,
+                        #TODO 고치기
                         bought_at=datetime.strptime(
-                            row.get('purchaseDate'), "%d/%m/%Y").date(),
+                            row.get('purchaseDate'), "%m/%d/%Y").date(),
                         note=row.get('note', '')
                     )
                     response_data.append(ItemSerializer(item).data)
@@ -84,12 +86,13 @@ class ExportGsAPIView(APIView):
 
 class ScanAPIView(APIView):
     def post(self, request):
+        csv_data = request.data['csvData']
+        location = request.data['location']
         csv_tag_ids = set([item.split(',')[0] for item in request.data])
-
         if not csv_tag_ids:
             return Response({"error": "No file uploaded"}, status=status.HTTP_400_BAD_REQUEST)
 
-        missing_items = Item.objects.exclude(tag_id__in=csv_tag_ids).values('tag_id', 'name')
+        missing_items = Item.objects.filter(location=location).exclude(tag_id__in=csv_tag_ids).values('tag_id', 'name')
 
         response_data = {
             "missing_items": list(missing_items)
