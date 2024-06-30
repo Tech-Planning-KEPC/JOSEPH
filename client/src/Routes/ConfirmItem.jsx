@@ -87,7 +87,18 @@ const StyledList = styled.ul`
     const hours = Math.floor(total_seconds / (60 * 60));
     const minutes = Math.floor((total_seconds - (hours * 60 * 60)) / 60);
     
-    return new Date(Date.UTC(date_info.getFullYear(), date_info.getMonth(), date_info.getDate()+2, hours, minutes, seconds));
+    return new Date(Date.UTC(date_info.getFullYear(), date_info.getMonth(), date_info.getDate()+2));
+  }
+
+  function dateToExcelSerial(date) {
+    const startDate = new Date(Date.UTC(1899, 11, 30));
+    const endDate = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()));
+    const days = Math.floor((endDate - startDate) / (1000 * 60 * 60 * 24));
+    
+    const fractionalDay = Math.floor((date.getUTCHours() * 3600 + date.getUTCMinutes() * 60 + date.getUTCSeconds()) / 86400);
+    const serial = days + fractionalDay;
+    
+    return serial;
   }
 
 export default function ConfirmItem() {
@@ -146,9 +157,10 @@ export default function ConfirmItem() {
   };
 
   const onSubmit = (values) => {
+    const convertedDate = dateToExcelSerial(new Date(values.purchaseDate));
     setModifiedData((prevData) => {
       const newData = [...prevData];
-      newData[page - 1] = values;
+      newData[page - 1] = { ...values, purchaseDate: convertedDate };
       return newData;
     });
     if (page !== totalPage) handleNextPage();
@@ -463,6 +475,7 @@ export default function ConfirmItem() {
         <InputContainer>
           <Label>구매일자</Label>
           <Input
+            
             key={`purchaseDate-${page}`}
             defaultValue={convertExcelDate(modifiedData[page - 1].purchaseDate).toLocaleDateString('en-US')}
             {...register("purchaseDate")}
