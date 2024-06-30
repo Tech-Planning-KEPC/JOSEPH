@@ -76,7 +76,7 @@ export default function Upload() {
         });
       });
       navigate("/upload/1", {
-        state: { data: newData, totalPage: data.length - 1 },
+        state: { data: newData, totalPage: data.length },
       });
     };
 
