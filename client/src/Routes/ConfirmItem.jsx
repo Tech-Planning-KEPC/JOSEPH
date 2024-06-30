@@ -87,34 +87,20 @@ export default function ConfirmItem() {
 
   const handleCommitteeSelect = (value) => {
     setCommitteeIdentify(value);
-    setModifiedData((prevData) => {
-      const newData = [...prevData];
-      newData[page - 1].committee = value;
-      return newData;
-    });
     setCommitteeIsOpen(false);
   };
 
   const handleDepartmentSelect = (value) => {
     setDepartmentIdentify(value);
-    setModifiedData((prevData) => {
-      const newData = [...prevData];
-      newData[page - 1].department = value;
-      return newData;
-    });
     setDepartmentIsOpen(false);
   };
 
   const handleLocationSelect = (value) => {
     setLocationIdentify(value);
-    setModifiedData((prevData) => {
-      const newData = [...prevData];
-      newData[page - 1].location = value;
-      return newData;
-    });
     setLocationIsOpen(false);
   };
 
+  //이전 버튼 눌렀을 때
   const handlePrevPage = () => {
     resetFields();
     navigate(`/upload/${page - 1}`, { state: { modifiedData, totalPage } });
@@ -123,6 +109,7 @@ export default function ConfirmItem() {
     setLocationIdentify(modifiedData[page - 2].location);
   };
 
+  //다음 버튼 눌렀을 때
   const handleNextPage = () => {
     resetFields();
     navigate(`/upload/${page + 1}`, { state: { modifiedData, totalPage } });
@@ -131,10 +118,14 @@ export default function ConfirmItem() {
     setLocationIdentify(modifiedData[page].location);
   };
 
+  //저장하기 버튼 눌렀을 때
   const onSubmit = (values) => {
     setModifiedData((prevData) => {
       const newData = [...prevData];
       newData[page - 1] = { ...values };
+      newData[page - 1].committee = CommitteeIdentify;
+      newData[page - 1].department = DepartmentIdentify;
+      newData[page - 1].location = LocationIdentify;
       return newData;
     });
     if (page !== totalPage) handleNextPage();
@@ -157,6 +148,7 @@ export default function ConfirmItem() {
     resetField("unitPrice");
   };
 
+  //제출하기 버튼 눌렀을 때
   const handleSave = async () => {
     console.log(modifiedData);
     const res = await fetch(`${SERVER_URL}/api/upload/`, {
