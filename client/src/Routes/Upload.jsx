@@ -57,6 +57,7 @@ export default function Upload() {
 
       const newData = [];
       data.forEach((row) => {
+        console.log(convertExcelDate(row[11]));
         newData.push({
           tagId: row[1],
           committee: row[2],
@@ -68,16 +69,22 @@ export default function Upload() {
           name: row[8],
           brand: row[9],
           model: row[10],
-          purchaseDate: row[11],
+          purchaseDate: convertExcelDate(row[11]),
           unitPrice: row[12],
           location: row[13],
           note: row[14],
-          inspectionDate: new Date(),
         });
       });
       navigate("/upload/1", {
         state: { data: newData, totalPage: data.length },
       });
+
+      function convertExcelDate(serial) {
+        const utc_days = Math.floor(serial - 25569);
+        const utc_value = utc_days * 86400;
+        const date_info = new Date(utc_value * 1000);
+        return new Date(date_info).toLocaleDateString("en-US");
+      }
     };
 
     if (acceptedFiles.length > 0) {
