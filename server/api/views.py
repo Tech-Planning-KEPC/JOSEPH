@@ -88,7 +88,7 @@ class ScanAPIView(APIView):
     def post(self, request):
         csv_data = request.data['csvData']
         location = request.data['location']
-        csv_tag_ids = set([item.split(',')[0] for item in request.data])
+        csv_tag_ids = set([item.split(',')[0] for item in csv_data])
         if not csv_tag_ids:
             return Response({"error": "No file uploaded"}, status=status.HTTP_400_BAD_REQUEST)
 
@@ -97,5 +97,8 @@ class ScanAPIView(APIView):
         response_data = {
             "missing_items": list(missing_items)
         }
-
+        print("csv_DAta: ", csv_data)
+        print("Location: ", location)
+        print("Tag_IDs: ", csv_tag_ids)
+        print("Missing: ", missing_items)
         return Response(response_data, status=status.HTTP_200_OK)
