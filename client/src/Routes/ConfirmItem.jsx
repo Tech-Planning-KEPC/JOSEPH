@@ -249,15 +249,6 @@ export default function ConfirmItem() {
       </h2>
       <Form onSubmit={handleSubmit(onSubmit)}>
         <InputContainer>
-          <Label>태그 ID</Label>
-          <Input
-            key={`tagId-${page}`}
-            value={modifiedData[page - 1].tagId}
-            {...register("tagId")}
-            autoFocus
-          />
-        </InputContainer>
-        <InputContainer>
           <Label>품명</Label>
           <Input
             key={`name-${page}`}
@@ -468,6 +459,15 @@ export default function ConfirmItem() {
             key={`memo-${page}`}
             value={modifiedData[page - 1].note}
             {...register("note")}
+          />
+        </InputContainer>
+        <InputContainer>
+          <Label>태그 ID</Label>
+          <Input
+            key={`tagId-${page}`}
+            value={modifiedData[page - 1].tagId}
+            {...register("tagId", {required: {value: true, message: "태그 ID는 필수입니다."}})}
+            autoFocus
           />
         </InputContainer>
         <button>저장하기</button>
