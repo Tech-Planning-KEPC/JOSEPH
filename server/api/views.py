@@ -24,6 +24,7 @@ class UploadAPIView(APIView):
     def post(self, request):
         data = request.data
         response_data = []
+        print(data)
         for row in data:
             tag_id = row.get('tagId')
             try:

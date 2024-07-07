@@ -82,7 +82,7 @@ export default function ConfirmItem() {
   const { data, totalPage } = state;
   const { id } = useParams();
   const page = Number(id);
-  const { register, handleSubmit, resetField } = useForm();
+  const { register, handleSubmit, resetField, getValues } = useForm();
   const [modifiedData, setModifiedData] = useState(data);
 
   const handleCommitteeSelect = (value) => {
@@ -102,6 +102,7 @@ export default function ConfirmItem() {
 
   //이전 버튼 눌렀을 때
   const handlePrevPage = () => {
+    saveCurrentPage();
     resetFields();
     navigate(`/upload/${page - 1}`, { state: { modifiedData, totalPage } });
     setCommitteeIdentify(modifiedData[page - 2].committee);
@@ -111,6 +112,11 @@ export default function ConfirmItem() {
 
   //다음 버튼 눌렀을 때
   const handleNextPage = () => {
+    saveCurrentPage();
+    if(getValues().tagId===""){
+      alert("태그 ID를 입력하세요");
+      return;
+    }
     resetFields();
     navigate(`/upload/${page + 1}`, { state: { modifiedData, totalPage } });
     setCommitteeIdentify(modifiedData[page].committee);
@@ -128,7 +134,25 @@ export default function ConfirmItem() {
       newData[page - 1].location = LocationIdentify;
       return newData;
     });
-    if (page !== totalPage) handleNextPage();
+    //if (page !== totalPage) handleNextPage();
+  };
+
+  const saveCurrentPage = () => {
+    const currentValues = getValues();
+
+    console.log("세이브:");
+    console.log(currentValues);
+    
+    setModifiedData((prevData) => {
+      const newData = [...prevData];
+      newData[page - 1] = {
+        ...currentValues,
+        committee: CommitteeIdentify,
+        department: DepartmentIdentify,
+        location: LocationIdentify,
+      };
+      return newData;
+    });
   };
 
   const resetFields = () => {
@@ -150,7 +174,12 @@ export default function ConfirmItem() {
 
   //제출하기 버튼 눌렀을 때
   const handleSave = async () => {
-    console.log(modifiedData);
+    saveCurrentPage();
+    if(getValues().tagId===""){
+      alert("태그 ID를 입력하세요");
+      return;
+    }
+    console.log("ㅇㅇㅇㅇㅇㅇㅇ:"+modifiedData);
     const res = await fetch(`${SERVER_URL}/api/upload/`, {
       method: "POST",
       headers: {
@@ -161,7 +190,7 @@ export default function ConfirmItem() {
 
     const data = await res.json();
 
-    console.log(data, res.status);
+    console.log("ㅁㅁㅁㅁ:"+data, "ㄴㄴㄴㄴㄴ"+res.status);
     if(res.status===200){
       navigate("/view")
     }
@@ -250,7 +279,7 @@ export default function ConfirmItem() {
       <h2>
         아이템 {page} / {totalPage}
       </h2>
-      <Form onSubmit={handleSubmit(onSubmit)}>
+      <Form id="itemForm" onSubmit={handleSubmit(onSubmit)}>
         <InputContainer>
           <Label>품명</Label>
           <Input
@@ -469,11 +498,12 @@ export default function ConfirmItem() {
           <Input
             key={`tagId-${page}`}
             defaultValue={modifiedData[page - 1].tagId}
-            {...register("tagId", {required: {value: true, message: "태그 ID는 필수입니다."}})}
+            //{...register("tagId", {required: {value: true, message: "태그 ID는 필수입니다."}})}
+            {...register("tagId")}
             autoFocus
           />
         </InputContainer>
-        <button>저장하기</button>
+        {/* <button>저장하기</button> */}
       </Form>
       <PageContainer>
         <button disabled={page === 1} onClick={handlePrevPage}>
