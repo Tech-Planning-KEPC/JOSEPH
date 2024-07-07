@@ -82,7 +82,7 @@ export default function ConfirmItem() {
   const { data, totalPage } = state;
   const { id } = useParams();
   const page = Number(id);
-  const { register, handleSubmit, resetField } = useForm();
+  const { register, handleSubmit, resetField, getValues } = useForm();
   const [modifiedData, setModifiedData] = useState(data);
 
   const handleCommitteeSelect = (value) => {
@@ -102,6 +102,7 @@ export default function ConfirmItem() {
 
   //이전 버튼 눌렀을 때
   const handlePrevPage = () => {
+    saveCurrentPage();
     resetFields();
     navigate(`/upload/${page - 1}`, { state: { modifiedData, totalPage } });
     setCommitteeIdentify(modifiedData[page - 2].committee);
@@ -111,6 +112,11 @@ export default function ConfirmItem() {
 
   //다음 버튼 눌렀을 때
   const handleNextPage = () => {
+    saveCurrentPage();
+    if(getValues().tagId===""){
+      alert("태그 ID를 입력하세요");
+      return;
+    }
     resetFields();
     navigate(`/upload/${page + 1}`, { state: { modifiedData, totalPage } });
     setCommitteeIdentify(modifiedData[page].committee);
@@ -128,7 +134,25 @@ export default function ConfirmItem() {
       newData[page - 1].location = LocationIdentify;
       return newData;
     });
-    if (page !== totalPage) handleNextPage();
+    //if (page !== totalPage) handleNextPage();
+  };
+
+  const saveCurrentPage = () => {
+    const currentValues = getValues();
+
+    console.log("세이브:");
+    console.log(currentValues);
+    
+    setModifiedData((prevData) => {
+      const newData = [...prevData];
+      newData[page - 1] = {
+        ...currentValues,
+        committee: CommitteeIdentify,
+        department: DepartmentIdentify,
+        location: LocationIdentify,
+      };
+      return newData;
+    });
   };
 
   const resetFields = () => {
@@ -150,7 +174,12 @@ export default function ConfirmItem() {
 
   //제출하기 버튼 눌렀을 때
   const handleSave = async () => {
-    console.log(modifiedData);
+    saveCurrentPage();
+    if(getValues().tagId===""){
+      alert("태그 ID를 입력하세요");
+      return;
+    }
+    console.log("ㅇㅇㅇㅇㅇㅇㅇ:"+modifiedData);
     const res = await fetch(`${SERVER_URL}/api/upload/`, {
       method: "POST",
       headers: {
@@ -161,7 +190,7 @@ export default function ConfirmItem() {
 
     const data = await res.json();
 
-    console.log(data, res.status);
+    console.log("ㅁㅁㅁㅁ:"+data, "ㄴㄴㄴㄴㄴ"+res.status);
     if(res.status===200){
       navigate("/view")
     }
@@ -250,12 +279,12 @@ export default function ConfirmItem() {
       <h2>
         아이템 {page} / {totalPage}
       </h2>
-      <Form onSubmit={handleSubmit(onSubmit)}>
+      <Form id="itemForm" onSubmit={handleSubmit(onSubmit)}>
         <InputContainer>
           <Label>품명</Label>
           <Input
             key={`name-${page}`}
-            value={modifiedData[page - 1].name}
+            defaultValue={modifiedData[page - 1].name}
             {...register("name")}
           />
         </InputContainer>
@@ -266,7 +295,7 @@ export default function ConfirmItem() {
             <div style={{ width: "101.18%" }}>
               <Input
                 key={`committee-${page}`}
-                value={CommitteeIdentify}
+                defaultValue={CommitteeIdentify}
                 {...register("committee")}
                 onClick={() => setCommitteeIsOpen(!CommitteeIsOpen)}
                 type="button"
@@ -310,7 +339,7 @@ export default function ConfirmItem() {
             <div style={{ width: "101.18%" }}>
               <Input
                 key={`departmnet-${page}`}
-                value={DepartmentIdentify}
+                defaultValue={DepartmentIdentify}
                 {...register("department")}
                 onClick={() => setDepartmentIsOpen(!DepartmentIsOpen)}
                 type="button"
@@ -354,7 +383,7 @@ export default function ConfirmItem() {
             <div style={{ width: "101.18%" }}>
               <Input
                 key={`location-${page}`}
-                value={LocationIdentify}
+                defaultValue={LocationIdentify}
                 {...register("location")}
                 onClick={() => setLocationIsOpen(!LocationIsOpen)}
                 type="button"
@@ -396,7 +425,7 @@ export default function ConfirmItem() {
           <Label>담당자</Label>
           <Input
             key={`manager-${page}`}
-            value={modifiedData[page - 1].manager}
+            defaultValue={modifiedData[page - 1].manager}
             {...register("manager")}
           />
         </InputContainer>
@@ -404,7 +433,7 @@ export default function ConfirmItem() {
           <Label>이메일</Label>
           <Input
             key={`email-${page}`}
-            value={modifiedData[page - 1].email}
+            defaultValue={modifiedData[page - 1].email}
             {...register("email")}
           />
         </InputContainer>
@@ -412,7 +441,7 @@ export default function ConfirmItem() {
           <Label>전화번호</Label>
           <Input
             key={`phone-${page}`}
-            value={modifiedData[page - 1].phone}
+            defaultValue={modifiedData[page - 1].phone}
             {...register("phone")}
           />
         </InputContainer>
@@ -420,7 +449,7 @@ export default function ConfirmItem() {
           <Label>카테고리</Label>
           <Input
             key={`category-${page}`}
-            value={modifiedData[page - 1].category}
+            defaultValue={modifiedData[page - 1].category}
             {...register("category")}
           />
         </InputContainer>
@@ -428,7 +457,7 @@ export default function ConfirmItem() {
           <Label>브랜드</Label>
           <Input
             key={`brand-${page}`}
-            value={modifiedData[page - 1].brand}
+            defaultValue={modifiedData[page - 1].brand}
             {...register("brand")}
           />
         </InputContainer>
@@ -436,7 +465,7 @@ export default function ConfirmItem() {
           <Label>모델</Label>
           <Input
             key={`model-${page}`}
-            value={modifiedData[page - 1].model}
+            defaultValue={modifiedData[page - 1].model}
             {...register("model")}
           />
         </InputContainer>
@@ -444,7 +473,7 @@ export default function ConfirmItem() {
           <Label>단가</Label>
           <Input
             key={`unitPrice-${page}`}
-            value={modifiedData[page - 1].unitPrice}
+            defaultValue={modifiedData[page - 1].unitPrice}
             {...register("unitPrice")}
           />
         </InputContainer>
@@ -460,7 +489,7 @@ export default function ConfirmItem() {
           <Label>비고</Label>
           <Input
             key={`memo-${page}`}
-            value={modifiedData[page - 1].note}
+            defaultValue={modifiedData[page - 1].note}
             {...register("note")}
           />
         </InputContainer>
@@ -468,12 +497,13 @@ export default function ConfirmItem() {
           <Label>태그 ID</Label>
           <Input
             key={`tagId-${page}`}
-            value={modifiedData[page - 1].tagId}
-            {...register("tagId", {required: {value: true, message: "태그 ID는 필수입니다."}})}
+            defaultValue={modifiedData[page - 1].tagId}
+            //{...register("tagId", {required: {value: true, message: "태그 ID는 필수입니다."}})}
+            {...register("tagId")}
             autoFocus
           />
         </InputContainer>
-        <button>저장하기</button>
+        {/* <button>저장하기</button> */}
       </Form>
       <PageContainer>
         <button disabled={page === 1} onClick={handlePrevPage}>
