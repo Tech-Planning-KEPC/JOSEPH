@@ -113,7 +113,7 @@ export default function ConfirmItem() {
   //다음 버튼 눌렀을 때
   const handleNextPage = () => {
     saveCurrentPage();
-    if(getValues().tagId===""){
+    if (getValues().tagId === "") {
       alert("태그 ID를 입력하세요");
       return;
     }
@@ -139,10 +139,6 @@ export default function ConfirmItem() {
 
   const saveCurrentPage = () => {
     const currentValues = getValues();
-
-    console.log("세이브:");
-    console.log(currentValues);
-    
     setModifiedData((prevData) => {
       const newData = [...prevData];
       newData[page - 1] = {
@@ -174,25 +170,25 @@ export default function ConfirmItem() {
 
   //제출하기 버튼 눌렀을 때
   const handleSave = async () => {
-    saveCurrentPage();
-    if(getValues().tagId===""){
+    // saveCurrentPage();
+    if (getValues().tagId === "") {
       alert("태그 ID를 입력하세요");
       return;
     }
-    console.log("ㅇㅇㅇㅇㅇㅇㅇ:"+modifiedData);
+
     const res = await fetch(`${SERVER_URL}/api/upload/`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(modifiedData),
+      body: JSON.stringify([...modifiedData.slice(0, -1), getValues()]),
     });
 
     const data = await res.json();
 
-    console.log("ㅁㅁㅁㅁ:"+data, "ㄴㄴㄴㄴㄴ"+res.status);
-    if(res.status===200){
-      navigate("/view")
+    console.log(data);
+    if (res.status === 200) {
+      navigate("/view");
     }
   };
 
@@ -273,7 +269,6 @@ export default function ConfirmItem() {
     false
   );
 
-  console.log(modifiedData[page - 1]);
   return (
     <Container>
       <h2>
