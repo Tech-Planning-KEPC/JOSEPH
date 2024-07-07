@@ -27,9 +27,9 @@ export default function Header() {
   return (
     <Container>
       <Title>Joseph</Title>
-      <LinkItem href="/upload">등록</LinkItem>
-      <LinkItem href="/scan">스캔</LinkItem>
-      <LinkItem href="/view">재고</LinkItem>
+      <LinkItem href="/view">재고 확인</LinkItem>
+      <LinkItem href="/upload">물품 등록</LinkItem>
+      <LinkItem href="/scan">물품 검수</LinkItem>
     </Container>
   );
 }
