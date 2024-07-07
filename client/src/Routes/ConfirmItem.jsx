@@ -162,7 +162,7 @@ export default function ConfirmItem() {
     const data = await res.json();
 
     console.log(data, res.status);
-    if(res.status==200){
+    if(res.status===200){
       navigate("/view")
     }
   };
