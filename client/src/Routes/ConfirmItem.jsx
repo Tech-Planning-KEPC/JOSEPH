@@ -466,7 +466,7 @@ export default function ConfirmItem() {
           <Input
             key={`tagId-${page}`}
             value={modifiedData[page - 1].tagId}
-            {...register("tagId")}
+            {...register("tagId", {required: {value: true, message: "태그 ID는 필수입니다."}})}
             autoFocus
           />
         </InputContainer>
