@@ -255,7 +255,7 @@ export default function ConfirmItem() {
           <Label>품명</Label>
           <Input
             key={`name-${page}`}
-            value={modifiedData[page - 1].name}
+            defaultValue={modifiedData[page - 1].name}
             {...register("name")}
           />
         </InputContainer>
@@ -266,7 +266,7 @@ export default function ConfirmItem() {
             <div style={{ width: "101.18%" }}>
               <Input
                 key={`committee-${page}`}
-                value={CommitteeIdentify}
+                defaultValue={CommitteeIdentify}
                 {...register("committee")}
                 onClick={() => setCommitteeIsOpen(!CommitteeIsOpen)}
                 type="button"
@@ -310,7 +310,7 @@ export default function ConfirmItem() {
             <div style={{ width: "101.18%" }}>
               <Input
                 key={`departmnet-${page}`}
-                value={DepartmentIdentify}
+                defaultValue={DepartmentIdentify}
                 {...register("department")}
                 onClick={() => setDepartmentIsOpen(!DepartmentIsOpen)}
                 type="button"
@@ -354,7 +354,7 @@ export default function ConfirmItem() {
             <div style={{ width: "101.18%" }}>
               <Input
                 key={`location-${page}`}
-                value={LocationIdentify}
+                defaultValue={LocationIdentify}
                 {...register("location")}
                 onClick={() => setLocationIsOpen(!LocationIsOpen)}
                 type="button"
@@ -396,7 +396,7 @@ export default function ConfirmItem() {
           <Label>담당자</Label>
           <Input
             key={`manager-${page}`}
-            value={modifiedData[page - 1].manager}
+            defaultValue={modifiedData[page - 1].manager}
             {...register("manager")}
           />
         </InputContainer>
@@ -404,7 +404,7 @@ export default function ConfirmItem() {
           <Label>이메일</Label>
           <Input
             key={`email-${page}`}
-            value={modifiedData[page - 1].email}
+            defaultValue={modifiedData[page - 1].email}
             {...register("email")}
           />
         </InputContainer>
@@ -412,7 +412,7 @@ export default function ConfirmItem() {
           <Label>전화번호</Label>
           <Input
             key={`phone-${page}`}
-            value={modifiedData[page - 1].phone}
+            defaultValue={modifiedData[page - 1].phone}
             {...register("phone")}
           />
         </InputContainer>
@@ -420,7 +420,7 @@ export default function ConfirmItem() {
           <Label>카테고리</Label>
           <Input
             key={`category-${page}`}
-            value={modifiedData[page - 1].category}
+            defaultValue={modifiedData[page - 1].category}
             {...register("category")}
           />
         </InputContainer>
@@ -428,7 +428,7 @@ export default function ConfirmItem() {
           <Label>브랜드</Label>
           <Input
             key={`brand-${page}`}
-            value={modifiedData[page - 1].brand}
+            defaultValue={modifiedData[page - 1].brand}
             {...register("brand")}
           />
         </InputContainer>
@@ -436,7 +436,7 @@ export default function ConfirmItem() {
           <Label>모델</Label>
           <Input
             key={`model-${page}`}
-            value={modifiedData[page - 1].model}
+            defaultValue={modifiedData[page - 1].model}
             {...register("model")}
           />
         </InputContainer>
@@ -444,7 +444,7 @@ export default function ConfirmItem() {
           <Label>단가</Label>
           <Input
             key={`unitPrice-${page}`}
-            value={modifiedData[page - 1].unitPrice}
+            defaultValue={modifiedData[page - 1].unitPrice}
             {...register("unitPrice")}
           />
         </InputContainer>
@@ -460,7 +460,7 @@ export default function ConfirmItem() {
           <Label>비고</Label>
           <Input
             key={`memo-${page}`}
-            value={modifiedData[page - 1].note}
+            defaultValue={modifiedData[page - 1].note}
             {...register("note")}
           />
         </InputContainer>
@@ -468,7 +468,7 @@ export default function ConfirmItem() {
           <Label>태그 ID</Label>
           <Input
             key={`tagId-${page}`}
-            value={modifiedData[page - 1].tagId}
+            defaultValue={modifiedData[page - 1].tagId}
             {...register("tagId", {required: {value: true, message: "태그 ID는 필수입니다."}})}
             autoFocus
           />
